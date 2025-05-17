@@ -7,8 +7,8 @@
 set -e
 
 # Configuration
-SUBSCRIPTION_ID="your-subscription-id"
-TENANT_ID="your-tenant-id"
+SUBSCRIPTION_ID="6d505432-f45f-4fb8-9afb-a5c761876cd3"
+TENANT_ID="24716ce3-de3f-46ef-a555-0dd2c9e293d8"
 LOCATION="eastus"
 ENVIRONMENT_NAME="dev"
 RESOURCE_NAME_PREFIX="contoso"

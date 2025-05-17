@@ -3,8 +3,8 @@
 
 # Configuration
 Write-Host "Loading configuration..." -ForegroundColor Cyan
-$SubscriptionId = "your-subscription-id"
-$TenantId = "your-tenant-id"
+$SubscriptionId = "6d505432-f45f-4fb8-9afb-a5c761876cd3"
+$TenantId = "24716ce3-de3f-46ef-a555-0dd2c9e293d8"
 $Location = "eastus"
 $EnvironmentName = "dev"
 $ResourceNamePrefix = "contoso"

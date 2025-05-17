@@ -7,7 +7,7 @@
 set -e
 
 # Configuration
-SUBSCRIPTION_ID="your-subscription-id"
+SUBSCRIPTION_ID="6d505432-f45f-4fb8-9afb-a5c761876cd3"
 RESOURCE_GROUP="contoso-dev-rg"
 LOG_ANALYTICS_WORKSPACE_NAME="contoso-dev-law"
 APP_INSIGHTS_NAME="contoso-dev-ai"

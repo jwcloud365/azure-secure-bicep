@@ -7,7 +7,7 @@
 set -e
 
 # Configuration
-SUBSCRIPTION_ID="your-subscription-id"
+SUBSCRIPTION_ID="6d505432-f45f-4fb8-9afb-a5c761876cd3"
 RESOURCE_GROUP="contoso-dev-rg"
 FRONTEND_VNET_NAME="contoso-dev-frontend-vnet"
 BACKEND_VNET_NAME="contoso-dev-backend-vnet"

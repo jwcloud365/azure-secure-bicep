@@ -7,7 +7,7 @@
 set -e
 
 # Configuration
-SUBSCRIPTION_ID="your-subscription-id"
+SUBSCRIPTION_ID="6d505432-f45f-4fb8-9afb-a5c761876cd3"
 RESOURCE_GROUP="contoso-dev-rg"
 SQL_SERVER_NAME="contoso-dev-sqlserver"
 SQL_DATABASE_NAME="contoso-dev-sqldb"
