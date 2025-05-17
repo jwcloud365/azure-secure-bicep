@@ -48,7 +48,7 @@
 - [x] Verify private endpoints are correctly configured
 - [x] Ensure WAF rules are appropriate for the application
 - [x] Validate that non-internet-facing resources are properly isolated
-- [ ] Review RBAC assignments (pending subscription details)
+- [x] Review RBAC assignments (subscription validated)
 
 ## Future Enhancements (Not in Initial Scope)
 - [ ] Set up CI/CD pipeline for infrastructure deployment
@@ -61,5 +61,9 @@
 - [x] Add architecture diagram description file
 - [x] Create end-to-end deployment test with cleanup
 - [x] Update main README with comprehensive documentation
+- [x] Create test parameter file without Key Vault references
+- [x] Create standalone component test scripts
+- [x] Verify subscription permissions and quotas
+- [x] Successfully test networking deployment
 - [ ] Add custom health probe configurations for Application Gateway
 - [ ] Consider Azure Key Vault integration for secret management
