@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "swedencentral"
+    },
+    "prefix": {
+      "value": "azuresecure"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "wafSubnetId": {
+      "value": "/subscriptions/6d505432-f45f-4fb8-9afb-a5c761876cd3/resourceGroups/azuresecure-dev-rg/providers/Microsoft.Network/virtualNetworks/azuresecure-dev-frontend-vnet/subnets/waf-subnet"
+    },
+    "appServiceHostName": {
+      "value": "azuresecure-dev-app.azurewebsites.net"
+    },
+    "healthProbePath": {
+      "value": "/api/health"
+    }
+  }
+}

@@ -1,6 +1,6 @@
-# Azure Infrastructure with Bicep
+# Secure Azure Infrastructure with Bicep
 
-This repository contains a complete Azure infrastructure deployment using Bicep templates. The architecture features a secure web application setup with an App Service as frontend and Azure SQL Database as backend, connected via private endpoints and protected by a Web Application Firewall.
+This repository contains a complete Azure infrastructure deployment using Bicep templates. The architecture features a secure web application setup with an App Service as frontend and Azure SQL Database as backend, connected via private endpoints and protected by a Web Application Firewall. The entire infrastructure has been implemented with a security-first approach to ensure isolation and protection of sensitive resources.
 
 ## Architecture Overview
 
@@ -20,31 +20,54 @@ For a detailed architecture diagram, see [Architecture Diagram](./infra/Architec
 
 ```
 .
+├── DEPLOYMENT_TASK.md    # Detailed deployment tasks and progress tracking
 ├── PLANNING.md           # High-level planning document
+├── SUMMARY.md            # Implementation summary
 ├── TASK.md               # Project tasks and progress tracking
 ├── README.md             # This file
 ├── infra/                # Infrastructure as Code files
 │   ├── main.bicep        # Main deployment template
-│   ├── main.parameters.json # Parameters for deployment
+│   ├── main.deployment.parameters.json # Parameters for deployment
+│   ├── appservice.parameters.json # App Service parameters
+│   ├── database.parameters.json    # Database parameters
+│   ├── keyvault.parameters.json    # Key Vault parameters 
+│   ├── waf.parameters.json         # WAF parameters
 │   ├── Architecture-Diagram.md # Architecture diagram description
 │   ├── modules/          # Bicep modules
+│   │   ├── appService-simple.bicep  # Simplified App Service deployment
 │   │   ├── appService.bicep  # App Service deployment
+│   │   ├── database-simple.bicep    # Simplified Database deployment 
 │   │   ├── database.bicep    # Database deployment
+│   │   ├── keyVault-simple.bicep    # Simplified Key Vault deployment
 │   │   ├── keyVault.bicep    # Key Vault for secret management
 │   │   ├── monitoring.bicep  # Monitoring resources
 │   │   ├── networking.bicep  # VNets, subnets, NSGs
+│   │   ├── networking-fixed.bicep  # Fixed networking module
 │   │   ├── privateDnsZones.bicep # Private DNS Zones for private endpoints
 │   │   ├── resourceGroup.bicep # Resource group creation
 │   │   └── waf.bicep         # WAF/Application Gateway with custom health probes
 │   ├── scripts/          # Deployment scripts
-│   │   ├── deploy.ps1    # PowerShell deployment script
-│   │   └── deploy.sh     # Bash deployment script
+│   │   ├── configure-private-endpoints.sh # Script for private endpoints
+│   │   ├── configure-vnet-integration.sh # Script for VNet integration
+│   │   ├── deploy-full.sh   # Full deployment script
+│   │   ├── deploy-keyvault.sh # Key Vault deployment
+│   │   ├── deploy-monitoring.sh # Monitoring deployment 
+│   │   ├── deploy-waf.sh    # WAF deployment
+│   │   ├── deploy-waf-improved.sh # Fixed WAF deployment
+│   │   ├── deploy-waf-bicep.sh # Alternative WAF deployment with Bicep
+│   │   ├── test-deploy-networking.sh # Networking deployment
+│   │   ├── test-deploy-rg.sh # Resource group deployment
+│   │   ├── validate-infrastructure.sh # Validation script
+│   │   └── deploy.ps1    # PowerShell deployment script
 │   └── tests/            # Validation test scripts
 │       ├── run-all-tests.sh  # Master test runner
 │       ├── test-appservice.sh # App Service tests
 │       ├── test-database.sh   # Database tests
+│       ├── test-e2e-deployment.sh # End-to-end tests
+│       ├── test-health-probe.sh # Health probe tests
 │       ├── test-monitoring.sh # Monitoring tests
 │       ├── test-networking.sh # Networking tests
+│       ├── test-validation.sh # Validation tests
 │       └── test-waf.sh       # WAF tests
 ```
 
@@ -59,41 +82,46 @@ For a detailed architecture diagram, see [Architecture Diagram](./infra/Architec
 
 1. Clone this repository:
    ```bash
-   git clone <repository-url>
-   cd Biceptest
+   git clone https://github.com/jwcloud365/azure-secure-bicep.git
+   cd azure-secure-bicep
    ```
 
-2. Update the parameter file:
-   - Open `infra/main.parameters.json`
+2. Review parameter files:
+   - `infra/main.deployment.parameters.json` - Main deployment parameters
+   - `infra/keyvault.parameters.json` - Key Vault parameters
+   - `infra/database.parameters.json` - Database parameters
+   - `infra/appservice.parameters.json` - App Service parameters
+   - `infra/waf.parameters.json` - WAF parameters
    - Update the values with your specific configuration
-   - For secure parameters, use Key Vault references or provide them during deployment
 
-3. Deploy the infrastructure:
-
-   **Using Bash:**
+3. Make the deployment scripts executable:
    ```bash
-   # Update subscription ID and tenant ID in the script
-   vi infra/scripts/deploy.sh
-   # Make the script executable
-   chmod +x infra/scripts/deploy.sh
-   # Run the deployment
-   ./infra/scripts/deploy.sh
-   ```
-
-   **Using PowerShell:**
-   ```powershell
-   # Update subscription ID and tenant ID in the script
-   notepad infra/scripts/deploy.ps1
-   # Run the deployment
-   ./infra/scripts/deploy.ps1
-   ```
-
-4. Validate the deployment:
-   ```bash
-   # Make the test scripts executable
+   chmod +x infra/scripts/*.sh
    chmod +x infra/tests/*.sh
-   # Run all tests
-   ./infra/tests/run-all-tests.sh
+   ```
+
+4. Deploy the complete infrastructure:
+   ```bash
+   ./infra/scripts/deploy-full.sh
+   ```
+   
+   Or deploy individual components:
+   ```bash
+   # Resource Group
+   ./infra/scripts/test-deploy-rg.sh
+   
+   # Networking
+   ./infra/scripts/test-deploy-networking.sh
+   
+   # Key Vault
+   ./infra/scripts/deploy-keyvault.sh
+   
+   # And so on for other components
+   ```
+
+5. Validate the deployment:
+   ```bash
+   ./infra/scripts/validate-infrastructure.sh
    ```
 
 ## Customization
@@ -124,10 +152,23 @@ For a detailed architecture diagram, see [Architecture Diagram](./infra/Architec
 ## Contributing
 
 1. Review the PLANNING.md for design guidelines
-2. Update TASK.md with any new tasks
+2. Update DEPLOYMENT_TASK.md with any new tasks or improvements
 3. Follow the modular approach when adding new components
 4. Include test scripts for new components
 
+## Documentation
+
+- [DEPLOYMENT_TASK.md](./DEPLOYMENT_TASK.md) - Detailed tasks and progress tracking
+- [SUMMARY.md](./SUMMARY.md) - Implementation summary and overview
+- [Architecture Diagram](./infra/Architecture-Diagram.md) - Visual representation of the architecture
+
+## Environment Information
+
+- **Tenant ID:** 24716ce3-de3f-46ef-a555-0dd2c9e293d8
+- **Subscription ID:** 6d505432-f45f-4fb8-9afb-a5c761876cd3
+- **Primary Region:** Sweden Central
+- **Date:** May 18, 2025
+
 ## License
 
-[Specify your license information]
+MIT License

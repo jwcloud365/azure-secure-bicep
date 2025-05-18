@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "prefix": {
+      "value": "azuresecure"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "location": {
+      "value": "swedencentral"
+    },
+    "subnetId": {
+      "value": "/subscriptions/6d505432-f45f-4fb8-9afb-a5c761876cd3/resourceGroups/azuresecure-dev-rg/providers/Microsoft.Network/virtualNetworks/azuresecure-dev-frontend-vnet/subnets/keyvault-subnet"
+    },
+    "accessPrincipalObjectId": {
+      "value": "ed906b0f-4726-43a2-85f6-f16db264fe4f"
+    },
+    "sqlAdministratorLogin": {
+      "value": "sqlAdmin"
+    },
+    "sqlAdministratorPassword": {
+      "value": "P@ssw0rd1234!"
+    }
+  }
+}

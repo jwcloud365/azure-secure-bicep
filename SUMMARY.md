@@ -1,7 +1,7 @@
 # Azure Infrastructure - Implementation Summary
 
 ## Overview
-This document provides a summary of the Azure infrastructure implementation for the secure web application setup. The infrastructure includes App Service for the frontend, Azure SQL Database for the backend, and Application Gateway with WAF for security, all connected via private endpoints.
+This document provides a summary of the Azure infrastructure implementation for the secure web application setup. The infrastructure includes App Service for the frontend, Azure SQL Database for the backend, and Application Gateway with WAF for security, all connected via private endpoints. The deployment has been completed in Sweden Central region.
 
 ## Completed Tasks
 
@@ -13,6 +13,7 @@ This document provides a summary of the Azure infrastructure implementation for 
 - ✅ Set up private endpoint connectivity between components
 - ✅ Configured WAF for application protection
 - ✅ Added monitoring and diagnostics for all components
+- ✅ Deployed all resources to Sweden Central region
 
 ### Security Enhancements
 - ✅ Added Key Vault integration for secure secret management
@@ -27,6 +28,9 @@ This document provides a summary of the Azure infrastructure implementation for 
 - ✅ Added region flexibility to handle quota issues
 - ✅ Created test scripts for validation
 - ✅ Added comprehensive cleanup procedures
+- ✅ Created deploy-full.sh for end-to-end deployment
+- ✅ Created individual component deployment scripts
+- ✅ Added progress tracking with DEPLOYMENT_TASK.md
 
 ## Pending Enhancements
 
@@ -47,8 +51,7 @@ This document provides a summary of the Azure infrastructure implementation for 
 ## Testing Results
 
 The infrastructure deployment has been successfully tested in:
-- North Europe region (primary)
-- West Europe region (backup)
+- Sweden Central region (primary)
 
 ### Test Results Summary
 1. **Network Connectivity**: App Service can privately connect to SQL Database ✅
@@ -74,6 +77,15 @@ The infrastructure deployment has been successfully tested in:
 2. Implement CI/CD pipeline for automated deployments
 3. Create monitoring dashboards and alerts
 4. Conduct security penetration testing
+5. Implement certificate management for Application Gateway
+6. Configure geo-redundancy with paired region
+
+## Deployment Instructions
+1. Clone the repository: `git clone https://github.com/jwcloud365/azure-secure-bicep.git`
+2. Navigate to the infrastructure directory: `cd azure-secure-bicep/infra`
+3. Review and update parameter files if needed
+4. Execute the full deployment script: `./scripts/deploy-full.sh`
+5. Validate deployment with: `./scripts/validate-infrastructure.sh`
 
 ---
-*Generated: May 18, 2025*
+*Updated: May 18, 2025*
