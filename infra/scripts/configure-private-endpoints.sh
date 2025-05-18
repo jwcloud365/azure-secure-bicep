@@ -13,7 +13,7 @@ ENV="dev"
 SQL_SERVER_NAME="${PREFIX}-${ENV}-sqlserver"
 SQL_PRIVATE_ENDPOINT_NAME="${PREFIX}-${ENV}-sql-pe"
 SQL_VNET_NAME="${PREFIX}-${ENV}-backend-vnet"
-SQL_SUBNET_NAME="db-subnet"
+SQL_SUBNET_NAME="database-subnet"
 SQL_PE_CONNECTION_NAME="${PREFIX}-${ENV}-sql-pe-connection"
 SQL_GROUP_ID="sqlServer"
 

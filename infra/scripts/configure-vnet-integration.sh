@@ -11,7 +11,7 @@ ENV="dev"
 # App Service variables
 APP_NAME="${PREFIX}-${ENV}-app"
 VNET_NAME="${PREFIX}-${ENV}-frontend-vnet"
-SUBNET_NAME="app-service-subnet"
+SUBNET_NAME="appservice-subnet"
 
 echo "=== Configuring VNet Integration for App Service ==="
 

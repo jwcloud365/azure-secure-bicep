@@ -14,7 +14,25 @@ The infrastructure includes:
 - Network Security Groups for traffic control with least-privilege rules
 - Monitoring with Log Analytics and diagnostic integration
 
-For a detailed architecture diagram, see [Architecture Diagram](./infra/Architecture-Diagram.md).
+For a detailed architecture diagram, see [Architecture Diagram](./infra/Final-Architecture-Diagram.md).
+
+## Documentation
+
+This repository includes comprehensive documentation:
+
+| Document | Description |
+|----------|-------------|
+| [README.md](./README.md) | This file with project overview and instructions |
+| [PLANNING.md](./PLANNING.md) | Project planning document with vision and constraints |
+| [TASK.md](./TASK.md) | Task tracking with implementation checklist |
+| [DEPLOYMENT_TASK.md](./DEPLOYMENT_TASK.md) | Detailed deployment tasks and progress |
+| [SUMMARY.md](./SUMMARY.md) | Implementation summary with key decisions |
+| [COMPLETION.md](./COMPLETION.md) | Deployment completion summary |
+| [VALIDATION_REPORT.md](./VALIDATION_REPORT.md) | Infrastructure validation test results |
+| [STATUS_REPORT.md](./STATUS_REPORT.md) | Current status report for all components |
+| [AZURE_DEPLOYMENT_SUMMARY.txt](./AZURE_DEPLOYMENT_SUMMARY.txt) | Comprehensive deployment summary |
+| [Architecture Diagram](./infra/Architecture-Diagram.md) | Architecture diagram description |
+| [Final Architecture Diagram](./infra/Final-Architecture-Diagram.md) | Final architecture diagram in ASCII format |
 
 ## Repository Structure
 
@@ -58,96 +76,133 @@ For a detailed architecture diagram, see [Architecture Diagram](./infra/Architec
 │   │   ├── test-deploy-networking.sh # Networking deployment
 │   │   ├── test-deploy-rg.sh # Resource group deployment
 │   │   ├── validate-infrastructure.sh # Validation script
-│   │   └── deploy.ps1    # PowerShell deployment script
-│   └── tests/            # Validation test scripts
-│       ├── run-all-tests.sh  # Master test runner
-│       ├── test-appservice.sh # App Service tests
-│       ├── test-database.sh   # Database tests
-│       ├── test-e2e-deployment.sh # End-to-end tests
-│       ├── test-health-probe.sh # Health probe tests
-│       ├── test-monitoring.sh # Monitoring tests
-│       ├── test-networking.sh # Networking tests
-│       ├── test-validation.sh # Validation tests
-│       └── test-waf.sh       # WAF tests
+│   │   └── fix-sql-security.sh # Script to fix SQL security
+│   └── tests/            # Test scripts
+│       ├── run-tests.sh  # Main test script
+│       ├── deploy-test-app.sh # Test app deployment script
+│       ├── app/          # Test application files
+│       └── test-page.html # Test page template
 ```
 
 ## Prerequisites
 
 - Azure CLI installed and configured
-- Bash or PowerShell environment
-- Azure subscription and appropriate permissions
-- (Optional) Bicep CLI for local development
+- Access to an Azure subscription
+- Bash shell environment (GitBash, WSL, or Linux/macOS terminal)
 
 ## Deployment Instructions
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/jwcloud365/azure-secure-bicep.git
-   cd azure-secure-bicep
-   ```
+### Prerequisites
+- Azure CLI installed and configured
+- Access to an Azure subscription
+- Bash shell environment (GitBash, WSL, or Linux/macOS terminal)
 
-2. Review parameter files:
-   - `infra/main.deployment.parameters.json` - Main deployment parameters
-   - `infra/keyvault.parameters.json` - Key Vault parameters
-   - `infra/database.parameters.json` - Database parameters
-   - `infra/appservice.parameters.json` - App Service parameters
-   - `infra/waf.parameters.json` - WAF parameters
-   - Update the values with your specific configuration
+### Deployment Options
 
-3. Make the deployment scripts executable:
-   ```bash
-   chmod +x infra/scripts/*.sh
-   chmod +x infra/tests/*.sh
-   ```
+#### Option 1: Complete Deployment
+To deploy the entire infrastructure in one go:
 
-4. Deploy the complete infrastructure:
-   ```bash
-   ./infra/scripts/deploy-full.sh
-   ```
-   
-   Or deploy individual components:
-   ```bash
-   # Resource Group
-   ./infra/scripts/test-deploy-rg.sh
-   
-   # Networking
-   ./infra/scripts/test-deploy-networking.sh
-   
-   # Key Vault
-   ./infra/scripts/deploy-keyvault.sh
-   
-   # And so on for other components
-   ```
+```bash
+cd infra/scripts
+chmod +x deploy-full.sh
+./deploy-full.sh
+```
 
-5. Validate the deployment:
-   ```bash
-   ./infra/scripts/validate-infrastructure.sh
-   ```
+#### Option 2: Step-by-Step Deployment
+For a more controlled deployment process:
 
-## Customization
+```bash
+cd infra/scripts
+chmod +x deploy-step-by-step.sh
+./deploy-step-by-step.sh
+```
 
-- **Resource Sizing**: Modify the SKUs in the Bicep module files to adjust resource sizes
-- **Network Settings**: Update address spaces in the networking.bicep file
-- **Security Rules**: Modify NSG rules in networking.bicep to adjust security posture
-- **Monitoring**: Configure additional diagnostic settings in monitoring.bicep
-- **Health Probes**: Configure custom health probe settings in waf.bicep
-- **Secret Management**: Update Key Vault access policies and secrets in keyVault.bicep
+### Post-Deployment Configuration
+
+After deployment, execute the following scripts to complete the configuration:
+
+1. Configure VNet Integration for App Service:
+```bash
+cd infra/scripts
+chmod +x configure-vnet-integration.sh
+./configure-vnet-integration.sh
+```
+
+2. Configure Private Endpoints for SQL Server:
+```bash
+cd infra/scripts
+chmod +x configure-private-endpoints.sh
+./configure-private-endpoints.sh
+```
+
+3. Fix SQL Server Security Settings:
+```bash
+cd infra/scripts
+chmod +x fix-sql-security.sh
+./fix-sql-security.sh
+```
+
+## Testing
+
+To validate the deployed infrastructure:
+
+```bash
+cd infra/tests
+chmod +x run-tests.sh
+./run-tests.sh
+```
+
+To deploy a test application to the App Service:
+
+```bash
+cd infra/tests
+chmod +x deploy-test-app.sh
+./deploy-test-app.sh
+```
+
+The test application includes:
+- Static HTML page showing deployment status
+- Health API endpoint for WAF health probes
+- Basic web.config for Node.js runtime
 
 ## Security Features
 
-- Frontend protected by WAF (OWASP ruleset)
-- Backend database accessible only via private endpoint
-- No direct internet exposure for backend resources
-- Network segmentation with NSGs
-- HTTPS enforced on App Service
-- Managed identity for secure authentication
+This infrastructure implements multiple security layers:
 
-## Monitoring and Management
+1. **Network Isolation**:
+   - Frontend and backend resources in separate VNets
+   - NSGs with least privilege access rules
+   - Private endpoints for backend services
 
-- All components send logs to a central Log Analytics Workspace
-- Application Insights for application telemetry
-- Diagnostic settings for infrastructure components
-- Comprehensive metrics and logs available in Azure Portal
+2. **WAF Protection**:
+   - Application Gateway with WAF_v2 SKU
+   - OWASP 3.2 ruleset in Prevention mode
+   - Custom health probe for App Service monitoring
+
+3. **Access Control**:
+   - SQL Server with public network access disabled
+   - Key Vault for secure credential storage
+   - System-assigned managed identities
+
+4. **Monitoring**:
+   - Log Analytics workspace for centralized logging
+   - Diagnostic settings for all resources
+   - Application Insights integration (planned)
+
+## Maintenance
+
+Regular maintenance tasks:
+1. Review and apply security patches
+2. Monitor WAF logs for attack patterns
+3. Check diagnostic logs for anomalies
+4. Update OWASP ruleset as new versions become available
+5. Rotate SQL credentials periodically
+
+## Limitations and Known Issues
+
+- Key Vault private endpoint needs further configuration
+- End-to-end application testing with database connectivity pending
+- Certificate management for Application Gateway not yet implemented
 
 ## Contributing
 
