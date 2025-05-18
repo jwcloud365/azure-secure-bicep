@@ -55,7 +55,7 @@ module resourceGroup './modules/resourceGroup.bicep' = {
 // 2. Create Network Infrastructure
 module networking './modules/networking.bicep' = {
   name: 'networkingDeployment'
-  scope: resourceGroup(rgName)
+  scope: az.resourceGroup(rgName)
   params: {
     location: location
     prefix: resourceNamePrefix
@@ -67,28 +67,47 @@ module networking './modules/networking.bicep' = {
   ]
 }
 
-// 3. Create Azure SQL Database
-module database './modules/database.bicep' = {
-  name: 'databaseDeployment'
-  scope: resourceGroup(rgName)
+// 3. Create Key Vault
+module keyVault './modules/keyVault.bicep' = {
+  name: 'keyVaultDeployment'
+  scope: az.resourceGroup(rgName)
   params: {
     location: location
     prefix: resourceNamePrefix
     environment: environmentName
-    administratorLogin: sqlAdministratorLogin
-    administratorLoginPassword: sqlAdministratorPassword
+    subnetId: networking.outputs.keyVaultSubnetId
+    accessPrincipalObjectId: 'REPLACE_WITH_USER_OBJECTID' // This needs to be set during deployment
+    sqlAdministratorLogin: sqlAdministratorLogin
+    sqlAdministratorPassword: sqlAdministratorPassword
+    tags: tags
+  }
+  dependsOn: [
+    resourceGroup
+  ]
+}
+
+// 4. Create Azure SQL Database
+module database './modules/database.bicep' = {
+  name: 'databaseDeployment'
+  scope: az.resourceGroup(rgName)
+  params: {
+    location: location
+    prefix: resourceNamePrefix
+    environment: environmentName
+    administratorLogin: sqlAdministratorLogin // For simplicity, we're using the direct parameter here
+    administratorLoginPassword: sqlAdministratorPassword // For simplicity, we're using the direct parameter here
     subnetId: networking.outputs.databaseSubnetId
     tags: tags
   }
   dependsOn: [
-    networking
+    resourceGroup
   ]
 }
 
-// 4. Create App Service with Private Endpoint
+// 5. Create App Service with Private Endpoint
 module appService './modules/appService.bicep' = {
   name: 'appServiceDeployment'
-  scope: resourceGroup(rgName)
+  scope: az.resourceGroup(rgName)
   params: {
     location: location
     prefix: resourceNamePrefix
@@ -98,32 +117,30 @@ module appService './modules/appService.bicep' = {
     sqlDatabaseName: database.outputs.sqlDatabaseName
     tags: tags
   }
-  dependsOn: [
-    database
-  ]
 }
 
-// 5. Create Web Application Firewall (Application Gateway)
+// 6. Create Web Application Firewall (Application Gateway)
 module waf './modules/waf.bicep' = {
   name: 'wafDeployment'
-  scope: resourceGroup(rgName)
+  scope: az.resourceGroup(rgName)
   params: {
     location: location
     prefix: resourceNamePrefix
     environment: environmentName
     wafSubnetId: networking.outputs.wafSubnetId
     appServiceHostName: appService.outputs.appServiceHostName
+    healthProbePath: '/api/health'  // Using the new parameter
+    healthProbeInterval: 30
+    healthProbeTimeout: 30
+    healthProbeUnhealthyThreshold: 3
     tags: tags
   }
-  dependsOn: [
-    appService
-  ]
 }
 
-// 6. Create Monitoring Resources
+// 7. Create Monitoring Resources
 module monitoring './modules/monitoring.bicep' = {
   name: 'monitoringDeployment'
-  scope: resourceGroup(rgName)
+  scope: az.resourceGroup(rgName)
   params: {
     location: location
     prefix: resourceNamePrefix
@@ -133,9 +150,6 @@ module monitoring './modules/monitoring.bicep' = {
     wafId: waf.outputs.wafId
     tags: tags
   }
-  dependsOn: [
-    waf
-  ]
 }
 
 // ------------- Outputs -------------

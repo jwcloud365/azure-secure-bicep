@@ -5,13 +5,14 @@ This repository contains a complete Azure infrastructure deployment using Bicep 
 ## Architecture Overview
 
 The infrastructure includes:
-- App Service (Frontend)
-- Azure SQL Database (Backend)
-- Web Application Firewall (Application Gateway)
-- Virtual Networks with subnet segregation
-- Private Endpoints for secure connectivity
-- Network Security Groups for traffic control
-- Monitoring with Log Analytics and Application Insights
+- App Service (Frontend) with health endpoint for monitoring
+- Azure SQL Database (Backend) secured with private endpoints
+- Web Application Firewall (Application Gateway) with custom health probes
+- Azure Key Vault for secret management and credential storage
+- Virtual Networks with subnet segregation (Frontend and Backend)
+- Private Endpoints for secure connectivity between components
+- Network Security Groups for traffic control with least-privilege rules
+- Monitoring with Log Analytics and diagnostic integration
 
 For a detailed architecture diagram, see [Architecture Diagram](./infra/Architecture-Diagram.md).
 
@@ -29,10 +30,12 @@ For a detailed architecture diagram, see [Architecture Diagram](./infra/Architec
 │   ├── modules/          # Bicep modules
 │   │   ├── appService.bicep  # App Service deployment
 │   │   ├── database.bicep    # Database deployment
+│   │   ├── keyVault.bicep    # Key Vault for secret management
 │   │   ├── monitoring.bicep  # Monitoring resources
 │   │   ├── networking.bicep  # VNets, subnets, NSGs
+│   │   ├── privateDnsZones.bicep # Private DNS Zones for private endpoints
 │   │   ├── resourceGroup.bicep # Resource group creation
-│   │   └── waf.bicep         # WAF/Application Gateway
+│   │   └── waf.bicep         # WAF/Application Gateway with custom health probes
 │   ├── scripts/          # Deployment scripts
 │   │   ├── deploy.ps1    # PowerShell deployment script
 │   │   └── deploy.sh     # Bash deployment script
@@ -99,6 +102,8 @@ For a detailed architecture diagram, see [Architecture Diagram](./infra/Architec
 - **Network Settings**: Update address spaces in the networking.bicep file
 - **Security Rules**: Modify NSG rules in networking.bicep to adjust security posture
 - **Monitoring**: Configure additional diagnostic settings in monitoring.bicep
+- **Health Probes**: Configure custom health probe settings in waf.bicep
+- **Secret Management**: Update Key Vault access policies and secrets in keyVault.bicep
 
 ## Security Features
 

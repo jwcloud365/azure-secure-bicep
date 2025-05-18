@@ -166,7 +166,8 @@ resource keyVaultNsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
 }
 
 // Frontend VNet
-resource frontendVNet 'Microsoft.Network/virtualNetworks@2021-05-01' = {  name: frontendVNetName
+resource frontendVNet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+  name: frontendVNetName
   location: location
   tags: tags
   properties: {
@@ -273,48 +274,6 @@ resource backendToFrontendPeering 'Microsoft.Network/virtualNetworks/virtualNetw
   }
 }
 
-// Private DNS Zones
-var sqlPrivateDnsZoneName = 'privatelink.database.windows.net'
-var privateDnsZoneSqlName = 'privatelink-database-windows-net'
-resource sqlPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: sqlPrivateDnsZoneName
-  location: 'global'
-  tags: tags
-}
-
-resource sqlPrivateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: sqlPrivateDnsZone
-  name: '${privateDnsZoneSqlName}-link'
-  location: 'global'
-  tags: tags
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: frontendVNet.id
-    }
-  }
-}
-
-// Key Vault Private DNS Zone
-resource keyVaultPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
-  name: 'privatelink.vaultcore.azure.net'
-  location: 'global'
-  tags: tags
-}
-
-resource keyVaultPrivateDnsZoneLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2020-06-01' = {
-  parent: keyVaultPrivateDnsZone
-  name: 'keyVaultPrivateDnsZone-link'
-  location: 'global'
-  tags: tags
-  properties: {
-    registrationEnabled: false
-    virtualNetwork: {
-      id: frontendVNet.id
-    }
-  }
-}
-
 // ------------- Outputs -------------
 output frontendVNetId string = frontendVNet.id
 output backendVNetId string = backendVNet.id
@@ -322,5 +281,3 @@ output wafSubnetId string = '${frontendVNet.id}/subnets/${wafSubnetName}'
 output appServiceSubnetId string = '${frontendVNet.id}/subnets/${appServiceSubnetName}'
 output keyVaultSubnetId string = '${frontendVNet.id}/subnets/${keyVaultSubnetName}'
 output databaseSubnetId string = '${backendVNet.id}/subnets/${databaseSubnetName}'
-output sqlPrivateDnsZoneId string = sqlPrivateDnsZone.id
-output keyVaultPrivateDnsZoneId string = keyVaultPrivateDnsZone.id

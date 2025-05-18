@@ -83,8 +83,10 @@ resource sqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
 }
 
 // Import sqlPrivateDnsZone from networking module
+var sqlServerHostname = az.environment().suffixes.sqlServerHostname
+var sqlPrivateDnsZoneName = 'privatelink.${sqlServerHostname}'
 resource sqlPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
-  name: 'privatelink.database.windows.net'
+  name: sqlPrivateDnsZoneName
 }
 
 // Create DNS Zone Group for Private Endpoint

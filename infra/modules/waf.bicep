@@ -21,12 +21,34 @@ param wafSubnetId string
 @description('The host name of the App Service')
 param appServiceHostName string
 
+@description('The health probe path for the App Service')
+param healthProbePath string = '/api/health'
+
+@description('The health probe interval in seconds')
+param healthProbeInterval int = 30
+
+@description('The health probe timeout in seconds')
+param healthProbeTimeout int = 30
+
+@description('The health probe unhealthy threshold')
+param healthProbeUnhealthyThreshold int = 3
+
+@description('Minimum number of servers that must be available for the probe to report as healthy')
+param healthProbeMinServers int = 0 
+
+@description('HTTP status codes to match for probe success')
+param healthProbeStatusCodes array = ['200-399']
+
+@description('Whether to use the host name from the backend HTTP settings')
+param pickHostNameFromBackendSettings bool = true
+
 @description('Tags to apply to resources')
 param tags object = {}
 
 // ------------- Variables -------------
 var wafName = '${prefix}-${environment}-waf'
 var wafPublicIpName = '${prefix}-${environment}-waf-pip'
+var healthProbeName = 'appServiceHealthProbe'
 
 // ------------- Resources -------------
 
@@ -104,7 +126,7 @@ resource waf 'Microsoft.Network/applicationGateways@2021-05-01' = {
           pickHostNameFromBackendAddress: true
           requestTimeout: 20
           probe: {
-            id: resourceId('Microsoft.Network/applicationGateways/probes', wafName, 'appServiceHealthProbe')
+            id: resourceId('Microsoft.Network/applicationGateways/probes', wafName, healthProbeName)
           }
         }
       }
@@ -138,8 +160,7 @@ resource waf 'Microsoft.Network/applicationGateways@2021-05-01' = {
           }
           backendHttpSettings: {
             id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', wafName, 'appServiceBackendHttpSettings')
-          }
-        }
+          }        }
       }
     ]
     webApplicationFirewallConfiguration: {
@@ -150,19 +171,17 @@ resource waf 'Microsoft.Network/applicationGateways@2021-05-01' = {
     }
     probes: [
       {
-        name: 'appServiceHealthProbe'
+        name: healthProbeName
         properties: {
           protocol: 'Https'
-          path: '/'
-          interval: 30
-          timeout: 30
-          unhealthyThreshold: 3
-          pickHostNameFromBackendHttpSettings: true
-          minServers: 0
+          path: healthProbePath
+          interval: healthProbeInterval
+          timeout: healthProbeTimeout
+          unhealthyThreshold: healthProbeUnhealthyThreshold
+          pickHostNameFromBackendHttpSettings: pickHostNameFromBackendSettings
+          minServers: healthProbeMinServers
           match: {
-            statusCodes: [
-              '200-399'
-            ]
+            statusCodes: healthProbeStatusCodes
           }
         }
       }

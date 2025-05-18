@@ -8,6 +8,7 @@ This document describes the architecture diagram for the Azure infrastructure. T
 1. **Frontend Virtual Network (10.0.0.0/16)**
    - WAF Subnet (10.0.0.0/24)
    - App Service Subnet (10.0.1.0/24)
+   - Key Vault Subnet (10.0.2.0/24)
 
 2. **Backend Virtual Network (10.1.0.0/16)**
    - Database Subnet (10.1.0.0/24)
@@ -19,15 +20,24 @@ This document describes the architecture diagram for the Azure infrastructure. T
 1. **Network Security Groups (NSGs)**
    - WAF NSG: Allows HTTP/HTTPS from Internet
    - App Service NSG: Allows traffic only from WAF subnet
+   - Key Vault NSG: Allows traffic only from App Service subnet
    - Database NSG: Allows traffic only from App Service subnet
 
 2. **Private Endpoints**
    - SQL Server Private Endpoint in Database subnet
+   - Key Vault Private Endpoint in Key Vault subnet
 
 3. **Web Application Firewall**
    - Deployed as an Application Gateway with WAF_v2 SKU
    - Public-facing with static IP
    - Protection for the App Service
+   - Custom health probe for App Service monitoring
+   - Configurable probe settings (path, interval, timeout)
+
+4. **Key Vault**
+   - Secure storage for secrets and credentials
+   - Private network access only
+   - Used to store SQL administrator credentials
 
 ### Application Components
 1. **App Service**
@@ -35,11 +45,18 @@ This document describes the architecture diagram for the Azure infrastructure. T
    - System-assigned managed identity
    - HTTPS only enabled
    - Connected to SQL Database via private endpoint
+   - Health endpoint for WAF health probes
 
 2. **SQL Database**
    - Public network access disabled
    - Accessible only via private endpoint
    - Located in Backend VNet
+   - Credentials stored securely in Key Vault
+
+3. **Key Vault**
+   - Stores sensitive configuration and credentials
+   - Private endpoint connectivity
+   - Role-based access control for secret management
 
 ### Monitoring Components
 1. **Log Analytics Workspace**

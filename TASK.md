@@ -56,6 +56,11 @@
 - [ ] Add geo-redundancy
 - [ ] Implement additional monitoring and alerting
 - [ ] Create cost optimization recommendations
+- [ ] Add certificate management for Application Gateway
+- [ ] Implement auto-scaling rules for App Service
+- [ ] Add Web Application Firewall custom rules
+- [ ] Implement Azure Front Door for global load balancing
+- [ ] Add Azure Firewall for outbound traffic protection
 
 ## Discovered During Work
 - [x] Add architecture diagram description file
@@ -65,5 +70,5 @@
 - [x] Create standalone component test scripts
 - [x] Verify subscription permissions and quotas
 - [x] Successfully test networking deployment
-- [ ] Add custom health probe configurations for Application Gateway
-- [ ] Consider Azure Key Vault integration for secret management
+- [x] Add custom health probe configurations for Application Gateway
+- [x] Consider Azure Key Vault integration for secret management

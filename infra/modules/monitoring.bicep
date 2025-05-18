@@ -1,7 +1,16 @@
 /*
   Monitoring Module
   
-  This module creates monitoring resources for the infrastructure:
+  This module creates monitoring // Reference the App Service resource
+resource appService 'Microsoft.Web/sites@2021-02-01' existing = {
+  name: split(appServiceId, '/')[8]
+}
+
+// Diagnostic Settings for App Service
+resource appServiceDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
+  name: '${prefix}-${environment}-appservice-diag'
+  scope: appService
+  properties: {rces for the infrastructure:
   - Log Analytics Workspace
   - Application Insights
   - Diagnostic settings for key resources
@@ -60,10 +69,15 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
+// Reference the App Service resource
+resource appServiceResource 'Microsoft.Web/sites@2021-02-01' existing = {
+  name: split(appServiceId, '/')[8]
+}
+
 // Diagnostic Settings for App Service
 resource appServiceDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: '${prefix}-${environment}-appservice-diag'
-  scope: resourceId('Microsoft.Web/sites', split(appServiceId, '/')[8])
+  scope: appServiceResource
   properties: {
     workspaceId: logAnalyticsWorkspace.id
     logs: [
@@ -101,10 +115,15 @@ resource appServiceDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01
   }
 }
 
+// Reference the SQL Server resource
+resource sqlServer 'Microsoft.Sql/servers@2021-05-01-preview' existing = {
+  name: split(sqlServerId, '/')[8]
+}
+
 // Diagnostic Settings for SQL Server
 resource sqlServerDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: '${prefix}-${environment}-sqlserver-diag'
-  scope: resourceId('Microsoft.Sql/servers', split(sqlServerId, '/')[8])
+  scope: sqlServer
   properties: {
     workspaceId: logAnalyticsWorkspace.id
     logs: [
@@ -120,10 +139,15 @@ resource sqlServerDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-
   }
 }
 
+// Reference the WAF resource
+resource waf 'Microsoft.Network/applicationGateways@2021-05-01' existing = {
+  name: split(wafId, '/')[8]
+}
+
 // Diagnostic Settings for WAF
 resource wafDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: '${prefix}-${environment}-waf-diag'
-  scope: resourceId('Microsoft.Network/applicationGateways', split(wafId, '/')[8])
+  scope: waf
   properties: {
     workspaceId: logAnalyticsWorkspace.id
     logs: [
